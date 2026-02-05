@@ -2,10 +2,15 @@ import { defineStore } from 'pinia'
 import { api } from '../boot/axios'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null,
-    token: localStorage.getItem('token') || null,
-  }),
+  state: () => {
+    const token = localStorage.getItem('token') || null
+    let user = null
+    try {
+      const saved = localStorage.getItem('user')
+      if (saved) user = JSON.parse(saved)
+    } catch (_) {}
+    return { user, token }
+  },
 
   getters: {
     isAuthenticated: (state) => !!state.token,
@@ -19,6 +24,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = response.data.token
         this.user = response.data.user
         localStorage.setItem('token', this.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
         
         // Set default authorization header
         api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
@@ -38,6 +44,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = response.data.token
         this.user = response.data.user
         localStorage.setItem('token', this.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
         
         api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         
@@ -59,6 +66,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = null
         this.user = null
         localStorage.removeItem('token')
+        localStorage.removeItem('user')
         delete api.defaults.headers.common['Authorization']
       }
     },
@@ -67,6 +75,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await api.get('/me')
         this.user = response.data
+        localStorage.setItem('user', JSON.stringify(response.data))
         return response.data
       } catch (error) {
         // If fetch fails, clear auth but don't throw

@@ -1,5 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+function getAuthFromStorage() {
+  const token = localStorage.getItem('token')
+  let user = null
+  try {
+    const saved = localStorage.getItem('user')
+    if (saved) user = JSON.parse(saved)
+  } catch (_) {}
+  return { token, user, isAuthenticated: !!token }
+}
+
 const routes = [
   {
     path: '/',
@@ -61,45 +71,22 @@ const router = createRouter({
   routes
 })
 
-// Router guard function - will be called after Pinia is initialized via boot file
-export function setupRouterGuard() {
-  router.beforeEach(async (to, from, next) => {
-    try {
-      // Dynamically import store - Pinia should be initialized by now via boot file
-      const { useAuthStore } = await import('../stores/auth')
-      const authStore = useAuthStore()
-      
-      // If user has token but no user data, try to fetch it
-      if (authStore.token && !authStore.user) {
-        try {
-          await authStore.fetchUser()
-        } catch (error) {
-          // If fetch fails, continue with navigation check
-          console.warn('Failed to fetch user on route guard:', error)
-        }
-      }
-      
-      if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        next({ name: 'login', query: { redirect: to.fullPath } })
-      } else if (to.meta.role) {
-        const userRole = authStore.user?.role?.slug
-        const allowedRoles = Array.isArray(to.meta.role) ? to.meta.role : [to.meta.role]
-        
-        if (!userRole || !allowedRoles.includes(userRole)) {
-          // User doesn't have required role, redirect to home
-          next({ name: 'home' })
-        } else {
-          next()
-        }
-      } else {
-        next()
-      }
-    } catch (error) {
-      // If Pinia/store is not available yet, allow navigation
-      console.warn('Auth store not available, allowing navigation:', error)
+router.beforeEach((to, from, next) => {
+  const { isAuthenticated, user } = getAuthFromStorage()
+  const userRole = user?.role?.slug
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: 'login', query: { redirect: to.fullPath } })
+  } else if (to.meta.role) {
+    const allowedRoles = Array.isArray(to.meta.role) ? to.meta.role : [to.meta.role]
+    if (!allowedRoles.includes(userRole)) {
+      next({ name: 'home' })
+    } else {
       next()
     }
-  })
-}
+  } else {
+    next()
+  }
+})
 
 export default router
