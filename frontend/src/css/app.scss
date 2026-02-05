@@ -1,1 +1,78 @@
 // app global css in SCSS form
+
+// Ensure Quasar icons render properly - hide any text content
+.q-icon {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  text-indent: 0;
+  overflow: hidden;
+  
+  // Hide any text content that might show as fallback
+  &::before {
+    content: '';
+  }
+  
+  // Ensure icon names don't show as text
+  font-variant: normal;
+  text-rendering: auto;
+}
+
+// Fix for icon rendering in navigation
+.q-item-section--avatar {
+  min-width: 40px;
+  max-width: 40px;
+  
+  .q-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// Ensure navigation items don't show icon names as text
+.q-item {
+  .q-item-section--avatar {
+    .q-icon {
+      // Hide any text that might appear
+      color: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  
+  // Prevent text duplication
+  .q-item-label {
+    margin-left: 0;
+  }
+}
+
+// Fix header toolbar spacing
+.q-header .q-toolbar {
+  min-height: 50px;
+  
+  .q-toolbar-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .q-btn {
+    flex-shrink: 0;
+  }
+  
+  .q-chip {
+    flex-shrink: 0;
+  }
+}

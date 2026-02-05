@@ -22,7 +22,7 @@
 import { defineComponent, ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { useQuasar } from 'quasar'
+import { useQuasar, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'RegisterPage',
@@ -36,6 +36,29 @@ export default defineComponent({
     const passwordConfirmation = ref('')
     const loading = ref(false)
 
+    // Helper function to show notifications
+    const showNotify = (type, message) => {
+      const options = {
+        type,
+        message,
+        position: 'top'
+      }
+      
+      // Use Notify.create directly - this should work with Quasar CLI
+      try {
+        if (Notify && typeof Notify.create === 'function') {
+          Notify.create(options)
+        } else if ($q && typeof $q.notify === 'function') {
+          $q.notify(options)
+        } else {
+          console[type === 'positive' ? 'log' : 'error'](message)
+        }
+      } catch (err) {
+        console.error('Notification error:', err)
+        console[type === 'positive' ? 'log' : 'error'](message)
+      }
+    }
+
     const onSubmit = async () => {
       loading.value = true
       try {
@@ -45,18 +68,10 @@ export default defineComponent({
           password: password.value,
           password_confirmation: passwordConfirmation.value
         })
-        $q.notify({
-          type: 'positive',
-          message: 'Registration successful!',
-          position: 'top'
-        })
+        showNotify('positive', 'Registration successful!')
         router.push('/applicant/profile')
       } catch (error) {
-        $q.notify({
-          type: 'negative',
-          message: error.response?.data?.message || 'Registration failed. Please try again.',
-          position: 'top'
-        })
+        showNotify('negative', error.response?.data?.message || 'Registration failed. Please try again.')
         console.error('Registration error:', error)
       } finally {
         loading.value = false

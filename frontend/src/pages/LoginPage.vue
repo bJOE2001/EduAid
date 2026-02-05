@@ -40,7 +40,7 @@
 import { defineComponent, ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter, useRoute } from 'vue-router'
-import { useQuasar } from 'quasar'
+import { useQuasar, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -54,6 +54,30 @@ export default defineComponent({
     const password = ref('')
     const loading = ref(false)
 
+    // Helper function to show notifications
+    const showNotify = (type, message) => {
+      const options = {
+        type,
+        message,
+        position: 'top'
+      }
+      
+      // Use Notify.create directly - this should work with Quasar CLI
+      try {
+        if (Notify && typeof Notify.create === 'function') {
+          Notify.create(options)
+        } else if ($q && typeof $q.notify === 'function') {
+          $q.notify(options)
+        } else {
+          // Fallback: console log
+          console[type === 'positive' ? 'log' : 'error'](message)
+        }
+      } catch (err) {
+        console.error('Notification error:', err)
+        console[type === 'positive' ? 'log' : 'error'](message)
+      }
+    }
+
     const onSubmit = async () => {
       loading.value = true
       try {
@@ -62,23 +86,40 @@ export default defineComponent({
           password: password.value
         })
         
-        $q.notify({
-          type: 'positive',
-          message: 'Login successful!',
-          position: 'top'
-        })
+        showNotify('positive', 'Login successful!')
         
-        const redirect = route.query.redirect || (authStore.userRole === 'applicant' ? '/applicant/dashboard' : '/admin/dashboard')
+        // Determine redirect based on user role
+        // The user data should be set immediately after login
+        const userRole = authStore.user?.role?.slug
+        let redirect = route.query.redirect
+        
+        if (!redirect) {
+          // Check role and redirect accordingly
+          if (userRole === 'applicant') {
+            redirect = '/applicant/dashboard'
+          } else if (userRole && ['admin', 'staff', 'committee', 'accounting', 'viewer'].includes(userRole)) {
+            redirect = '/admin/dashboard'
+          } else {
+            // If role is not set or unknown, try to get it from the store getter
+            const roleFromGetter = authStore.userRole
+            if (roleFromGetter === 'applicant') {
+              redirect = '/applicant/dashboard'
+            } else if (roleFromGetter && ['admin', 'staff', 'committee', 'accounting', 'viewer'].includes(roleFromGetter)) {
+              redirect = '/admin/dashboard'
+            } else {
+              // Default to home if role is still unknown
+              console.warn('Unknown user role, redirecting to home:', { userRole, roleFromGetter, user: authStore.user })
+              redirect = '/'
+            }
+          }
+        }
+        
         router.push(redirect)
       } catch (error) {
         const errorMessage = error.response?.data?.message || 
                            error.response?.data?.errors?.email?.[0] ||
                            'Login failed. Please check your credentials.'
-        $q.notify({
-          type: 'negative',
-          message: errorMessage,
-          position: 'top'
-        })
+        showNotify('negative', errorMessage)
         console.error('Login error:', error)
       } finally {
         loading.value = false
