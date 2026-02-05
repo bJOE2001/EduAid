@@ -143,15 +143,6 @@
             <q-item-label class="text-body1">Applications</q-item-label>
           </q-item-section>
         </q-item>
-        <q-separator class="q-mt-md" />
-        <q-item clickable v-ripple @click="handleLogout" class="q-pa-md">
-          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
-            <q-icon name="logout" color="negative" size="20px" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label class="text-body1 text-negative">Logout</q-item-label>
-          </q-item-section>
-        </q-item>
       </q-list>
     </q-drawer>
 

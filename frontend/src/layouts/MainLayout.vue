@@ -112,14 +112,6 @@
               <q-item-label caption>{{ authStore.user?.name }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple @click="handleLogout">
-            <q-item-section avatar>
-              <q-icon name="logout" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Logout</q-item-label>
-            </q-item-section>
-          </q-item>
         </template>
       </q-list>
     </q-drawer>

@@ -1,15 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-function getAuthFromStorage() {
-  const token = localStorage.getItem('token')
-  let user = null
-  try {
-    const saved = localStorage.getItem('user')
-    if (saved) user = JSON.parse(saved)
-  } catch (_) {}
-  return { token, user, isAuthenticated: !!token }
-}
-
 const routes = [
   {
     path: '/',
@@ -71,22 +61,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const { isAuthenticated, user } = getAuthFromStorage()
-  const userRole = user?.role?.slug
-
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'login', query: { redirect: to.fullPath } })
-  } else if (to.meta.role) {
-    const allowedRoles = Array.isArray(to.meta.role) ? to.meta.role : [to.meta.role]
-    if (!allowedRoles.includes(userRole)) {
-      next({ name: 'home' })
-    } else {
-      next()
-    }
-  } else {
-    next()
-  }
-})
+// Router guard is set up in boot/router.js to ensure Pinia is initialized first
+// This allows us to use the auth store properly
 
 export default router
