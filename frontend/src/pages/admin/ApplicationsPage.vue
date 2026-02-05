@@ -51,11 +51,12 @@
 import { defineComponent, ref, onMounted, watch } from 'vue'
 import { api } from '../../boot/axios'
 import { useRouter } from 'vue-router'
-import { Notify, Dialog } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'AdminApplicationsPage',
   setup() {
+    const $q = useQuasar()
     const router = useRouter()
     const applications = ref([])
     const scholarships = ref([])
@@ -138,21 +139,21 @@ export default defineComponent({
     }
 
     const approveApplication = (application) => {
-      Dialog.create({
+      $q.dialog({
         title: 'Approve Application',
         message: `Approve application from ${application.applicant?.user?.name}?`,
         cancel: true
       }).onOk(async () => {
         try {
           await api.put(`/applications/${application.id}`, { status: 'approved' })
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Application approved',
             position: 'top'
           })
           fetchApplications()
         } catch (error) {
-          Notify.create({
+          $q.notify({
             type: 'negative',
             message: 'Error approving application',
             position: 'top'
@@ -162,7 +163,7 @@ export default defineComponent({
     }
 
     const rejectApplication = (application) => {
-      Dialog.create({
+      $q.dialog({
         title: 'Reject Application',
         message: `Reject application from ${application.applicant?.user?.name}?`,
         prompt: {
@@ -177,14 +178,14 @@ export default defineComponent({
             status: 'rejected',
             remarks: reason
           })
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Application rejected',
             position: 'top'
           })
           fetchApplications()
         } catch (error) {
-          Notify.create({
+          $q.notify({
             type: 'negative',
             message: 'Error rejecting application',
             position: 'top'

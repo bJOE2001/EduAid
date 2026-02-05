@@ -124,11 +124,12 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { api } from '../../boot/axios'
 import { useAuthStore } from '../../stores/auth'
-import { Notify } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'ApplicantProfilePage',
   setup() {
+    const $q = useQuasar()
     const authStore = useAuthStore()
     const applicant = ref(null)
     const tab = ref('personal')
@@ -187,13 +188,13 @@ export default defineComponent({
       try {
         const response = await api.post('/applicants', form.value)
         applicant.value = response.data
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Profile created successfully!',
           position: 'top'
         })
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: error.response?.data?.message || 'Error creating profile',
           position: 'top'
@@ -208,7 +209,7 @@ export default defineComponent({
       try {
         if (applicant.value) {
           await api.put(`/applicants/${applicant.value.id}`, form.value)
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Profile updated successfully!',
             position: 'top'
@@ -218,7 +219,7 @@ export default defineComponent({
           await createProfile()
         }
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: error.response?.data?.message || 'Error saving profile',
           position: 'top'
@@ -233,6 +234,7 @@ export default defineComponent({
     })
 
     return {
+      $q,
       applicant,
       tab,
       form,

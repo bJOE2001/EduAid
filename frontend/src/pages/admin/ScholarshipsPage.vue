@@ -47,11 +47,12 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { api } from '../../boot/axios'
 import { useRouter } from 'vue-router'
-import { Notify, Dialog } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'AdminScholarshipsPage',
   setup() {
+    const $q = useQuasar()
     const router = useRouter()
     const scholarships = ref([])
     const loading = ref(false)
@@ -86,14 +87,14 @@ export default defineComponent({
     const updateStatus = async (scholarship) => {
       try {
         await api.put(`/scholarships/${scholarship.id}`, { is_active: scholarship.is_active })
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Status updated',
           position: 'top'
         })
       } catch (error) {
         scholarship.is_active = !scholarship.is_active
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error updating status',
           position: 'top'
@@ -102,7 +103,7 @@ export default defineComponent({
     }
 
     const deleteScholarship = (scholarship) => {
-      Dialog.create({
+      $q.dialog({
         title: 'Confirm Delete',
         message: `Are you sure you want to delete "${scholarship.name}"?`,
         cancel: true,
@@ -110,14 +111,14 @@ export default defineComponent({
       }).onOk(async () => {
         try {
           await api.delete(`/scholarships/${scholarship.id}`)
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Scholarship deleted',
             position: 'top'
           })
           fetchScholarships()
         } catch (error) {
-          Notify.create({
+          $q.notify({
             type: 'negative',
             message: 'Error deleting scholarship',
             position: 'top'

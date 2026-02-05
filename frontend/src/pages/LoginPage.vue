@@ -37,13 +37,15 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, getCurrentInstance } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'LoginPage',
   setup() {
+    const instance = getCurrentInstance()
+    const $q = instance?.appContext.config.globalProperties.$q
     const authStore = useAuthStore()
     const router = useRouter()
     const route = useRoute()
@@ -51,6 +53,15 @@ export default defineComponent({
     const email = ref('')
     const password = ref('')
     const loading = ref(false)
+
+    const showNotify = (type, message) => {
+      if ($q && typeof $q.notify === 'function') {
+        $q.notify({ type, message, position: 'top' })
+      } else {
+        // Fallback to console if notify is not available
+        console[type === 'positive' ? 'log' : 'error'](message)
+      }
+    }
 
     const onSubmit = async () => {
       loading.value = true
@@ -60,9 +71,12 @@ export default defineComponent({
           password: password.value
         })
         
+        showNotify('positive', 'Login successful!')
+        
         const redirect = route.query.redirect || (authStore.userRole === 'applicant' ? '/applicant/dashboard' : '/admin/dashboard')
         router.push(redirect)
       } catch (error) {
+        showNotify('negative', error.response?.data?.message || 'Login failed. Please check your credentials.')
         console.error('Login error:', error)
       } finally {
         loading.value = false

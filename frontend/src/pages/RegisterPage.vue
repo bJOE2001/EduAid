@@ -22,12 +22,14 @@
 import { defineComponent, ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'RegisterPage',
   setup() {
     const authStore = useAuthStore()
     const router = useRouter()
+    const $q = useQuasar()
     const name = ref('')
     const email = ref('')
     const password = ref('')
@@ -43,8 +45,18 @@ export default defineComponent({
           password: password.value,
           password_confirmation: passwordConfirmation.value
         })
+        $q.notify({
+          type: 'positive',
+          message: 'Registration successful!',
+          position: 'top'
+        })
         router.push('/applicant/profile')
       } catch (error) {
+        $q.notify({
+          type: 'negative',
+          message: error.response?.data?.message || 'Registration failed. Please try again.',
+          position: 'top'
+        })
         console.error('Registration error:', error)
       } finally {
         loading.value = false

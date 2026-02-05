@@ -50,11 +50,12 @@
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { api } from '../../boot/axios'
 import { useRouter, useRoute } from 'vue-router'
-import { Notify } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'AdminScholarshipFormPage',
   setup() {
+    const $q = useQuasar()
     const router = useRouter()
     const route = useRoute()
     const isEdit = computed(() => !!route.params.id)
@@ -87,7 +88,7 @@ export default defineComponent({
           form.value.application_end = response.data.application_end.split('T')[0]
         }
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error loading scholarship',
           position: 'top'
@@ -100,14 +101,14 @@ export default defineComponent({
       try {
         if (isEdit.value) {
           await api.put(`/scholarships/${route.params.id}`, form.value)
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Scholarship updated successfully',
             position: 'top'
           })
         } else {
           await api.post('/scholarships', form.value)
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Scholarship created successfully',
             position: 'top'
@@ -115,7 +116,7 @@ export default defineComponent({
         }
         router.push('/admin/scholarships')
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: error.response?.data?.message || 'Error saving scholarship',
           position: 'top'

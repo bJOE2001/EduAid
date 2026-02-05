@@ -45,11 +45,12 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { api } from '../../boot/axios'
 import { useRouter, useRoute } from 'vue-router'
-import { Notify } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'ApplicantApplicationFormPage',
   setup() {
+    const $q = useQuasar()
     const router = useRouter()
     const route = useRoute()
     const scholarship = ref(null)
@@ -60,7 +61,7 @@ export default defineComponent({
     const fetchScholarship = async () => {
       const scholarshipId = route.query.scholarship_id
       if (!scholarshipId) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'No scholarship selected',
           position: 'top'
@@ -79,7 +80,7 @@ export default defineComponent({
           documents.value[req.id] = null
         })
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error loading scholarship',
           position: 'top'
@@ -95,7 +96,7 @@ export default defineComponent({
       )
 
       if (missingDocs.length > 0) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Please upload all required documents',
           position: 'top'
@@ -132,7 +133,7 @@ export default defineComponent({
           }
         })
 
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Application submitted successfully!',
           position: 'top'
@@ -140,7 +141,7 @@ export default defineComponent({
 
         router.push('/applicant/applications')
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: error.response?.data?.message || 'Error submitting application',
           position: 'top'

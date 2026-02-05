@@ -90,11 +90,12 @@ import { defineComponent, ref, computed, onMounted } from 'vue'
 import { api } from '../boot/axios'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { Notify } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'ScholarshipDetailPage',
   setup() {
+    const $q = useQuasar()
     const authStore = useAuthStore()
     const router = useRouter()
     const scholarship = ref(null)
@@ -137,7 +138,7 @@ export default defineComponent({
         scholarship.value = response.data
         requirements.value = response.data.requirements || []
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error loading scholarship details',
           position: 'top'

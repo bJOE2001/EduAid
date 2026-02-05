@@ -59,11 +59,12 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { api } from '../../boot/axios'
-import { Notify } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'AdminReportsPage',
   setup() {
+    const $q = useQuasar()
     const reportData = ref(null)
     const reportTitle = ref('')
     const reportColumns = ref([])
@@ -80,13 +81,13 @@ export default defineComponent({
           { name: 'status', label: 'Status', field: 'status' },
           { name: 'created_at', label: 'Date', field: 'created_at', format: val => new Date(val).toLocaleDateString() }
         ]
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Report generated',
           position: 'top'
         })
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error generating report',
           position: 'top'
@@ -107,13 +108,13 @@ export default defineComponent({
           { name: 'status', label: 'Status', field: 'status' },
           { name: 'current_gwa', label: 'GWA', field: 'current_gwa' }
         ]
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Report generated',
           position: 'top'
         })
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error generating report',
           position: 'top'
@@ -133,13 +134,13 @@ export default defineComponent({
           { name: 'type', label: 'Type', field: 'type' },
           { name: 'released_date', label: 'Released', field: 'released_date', format: val => val ? new Date(val).toLocaleDateString() : '-' }
         ]
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Report generated',
           position: 'top'
         })
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error generating report',
           position: 'top'
@@ -148,7 +149,7 @@ export default defineComponent({
     }
 
     const exportApplicantsPDF = () => {
-      Notify.create({
+      $q.notify({
         type: 'info',
         message: 'PDF export feature coming soon',
         position: 'top'
@@ -156,7 +157,7 @@ export default defineComponent({
     }
 
     const exportScholarsPDF = () => {
-      Notify.create({
+      $q.notify({
         type: 'info',
         message: 'PDF export feature coming soon',
         position: 'top'
@@ -174,7 +175,7 @@ export default defineComponent({
     const viewStatistics = async () => {
       try {
         const response = await api.get('/reports/statistics')
-        Notify.create({
+        $q.notify({
           type: 'info',
           message: 'Statistics loaded',
           position: 'top'

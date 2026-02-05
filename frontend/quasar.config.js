@@ -64,7 +64,7 @@ module.exports = configure(function (ctx) {
       // components: [],
       // directives: [],
 
-      // Quasar plugins
+      // Quasar plugins (auto-imported, but Notify/Dialog are configured above)
       plugins: []
     },
 

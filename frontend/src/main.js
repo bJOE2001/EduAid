@@ -10,15 +10,13 @@ import '@quasar/extras/fontawesome-v6/fontawesome-v6.css'
 // Import Quasar css
 import 'quasar/src/css/index.sass'
 
-// Import boot files
-import './boot'
-
 // Import App component
 import App from './App.vue'
 
 const myApp = createApp(App)
 
-// Install Quasar
+// Install Quasar with plugins (plugins are configured in quasar.config.js)
+// But we need to explicitly enable them here for useQuasar() to work
 myApp.use(Quasar, {
   plugins: {
     Notify: {},
@@ -40,10 +38,16 @@ myApp.use(Quasar, {
 })
 
 // Install Pinia
-myApp.use(createPinia())
+const pinia = createPinia()
+myApp.use(pinia)
 
 // Install Router
 myApp.use(router)
+
+// Initialize auth store
+import { useAuthStore } from './stores/auth'
+const authStore = useAuthStore()
+authStore.initializeAuth()
 
 // Mount the app
 myApp.mount('#app')

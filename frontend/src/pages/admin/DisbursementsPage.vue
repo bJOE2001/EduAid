@@ -46,11 +46,12 @@
 <script>
 import { defineComponent, ref, onMounted, watch } from 'vue'
 import { api } from '../../boot/axios'
-import { Notify } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'AdminDisbursementsPage',
   setup() {
+    const $q = useQuasar()
     const disbursements = ref([])
     const loading = ref(false)
     const filters = ref({
@@ -117,14 +118,14 @@ export default defineComponent({
     const releaseDisbursement = async (disbursement) => {
       try {
         await api.post(`/disbursements/${disbursement.id}/release`)
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Disbursement released',
           position: 'top'
         })
         fetchDisbursements()
       } catch (error) {
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error releasing disbursement',
           position: 'top'

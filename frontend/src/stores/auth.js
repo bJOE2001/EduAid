@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { api } from '../boot/axios'
-import { Notify } from 'quasar'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -24,19 +23,11 @@ export const useAuthStore = defineStore('auth', {
         // Set default authorization header
         api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         
-        Notify.create({
-          type: 'positive',
-          message: 'Login successful!',
-          position: 'top'
-        })
+        // Notification will be handled by the component
         
         return response.data
       } catch (error) {
-        Notify.create({
-          type: 'negative',
-          message: error.response?.data?.message || 'Login failed',
-          position: 'top'
-        })
+        // Error will be thrown and handled by the component
         throw error
       }
     },
@@ -50,19 +41,11 @@ export const useAuthStore = defineStore('auth', {
         
         api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         
-        Notify.create({
-          type: 'positive',
-          message: 'Registration successful!',
-          position: 'top'
-        })
+        // Notification will be handled by the component
         
         return response.data
       } catch (error) {
-        Notify.create({
-          type: 'negative',
-          message: error.response?.data?.message || 'Registration failed',
-          position: 'top'
-        })
+        // Error will be thrown and handled by the component
         throw error
       }
     },

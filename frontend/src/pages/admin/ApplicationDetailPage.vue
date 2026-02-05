@@ -87,11 +87,12 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { api } from '../../boot/axios'
 import { useRoute } from 'vue-router'
-import { Notify, Dialog } from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'AdminApplicationDetailPage',
   setup() {
+    const $q = useQuasar()
     const route = useRoute()
     const application = ref(null)
     const tab = ref('info')
@@ -129,14 +130,14 @@ export default defineComponent({
         await api.post(`/applications/${application.value.id}/documents/${doc.id}/verify`, {
           is_verified: doc.is_verified
         })
-        Notify.create({
+        $q.notify({
           type: 'positive',
           message: 'Document verification updated',
           position: 'top'
         })
       } catch (error) {
         doc.is_verified = !doc.is_verified
-        Notify.create({
+        $q.notify({
           type: 'negative',
           message: 'Error updating verification',
           position: 'top'
@@ -145,21 +146,21 @@ export default defineComponent({
     }
 
     const approveApplication = () => {
-      Dialog.create({
+      $q.dialog({
         title: 'Approve Application',
         message: 'Are you sure you want to approve this application?',
         cancel: true
       }).onOk(async () => {
         try {
           await api.put(`/applications/${application.value.id}`, { status: 'approved' })
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Application approved',
             position: 'top'
           })
           await fetchApplication()
         } catch (error) {
-          Notify.create({
+          $q.notify({
             type: 'negative',
             message: 'Error approving application',
             position: 'top'
@@ -169,7 +170,7 @@ export default defineComponent({
     }
 
     const rejectApplication = () => {
-      Dialog.create({
+      $q.dialog({
         title: 'Reject Application',
         message: 'Are you sure you want to reject this application?',
         prompt: {
@@ -184,14 +185,14 @@ export default defineComponent({
             status: 'rejected',
             remarks: reason
           })
-          Notify.create({
+          $q.notify({
             type: 'positive',
             message: 'Application rejected',
             position: 'top'
           })
           await fetchApplication()
         } catch (error) {
-          Notify.create({
+          $q.notify({
             type: 'negative',
             message: 'Error rejecting application',
             position: 'top'
