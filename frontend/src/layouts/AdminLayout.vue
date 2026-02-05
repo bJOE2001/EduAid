@@ -6,10 +6,16 @@
           flat 
           dense 
           round 
-          icon="menu" 
           @click="leftDrawerOpen = !leftDrawerOpen"
-          class="lt-md q-mr-sm"
-        />
+          class="q-mr-sm"
+          style="min-width: 40px;"
+        >
+          <q-icon 
+            name="menu" 
+            class="text-white" 
+            style="font-size: 24px; color: white !important; display: block !important;" 
+          />
+        </q-btn>
         <q-toolbar-title class="row items-center no-wrap q-mr-md">
           <q-icon name="school" size="md" class="q-mr-sm" />
           <span class="text-no-wrap">EduAid - Admin Portal</span>
@@ -72,29 +78,25 @@
     <q-drawer 
       v-model="leftDrawerOpen" 
       :breakpoint="1024"
-      :width="280"
+      :width="260"
       bordered
       show-if-above
       class="bg-grey-1"
     >
       <q-list>
-        <q-item-label header class="text-grey-8 q-pa-md">
-          <div class="text-h6">Navigation</div>
-        </q-item-label>
-        <q-separator />
         <q-item 
           clickable 
           v-ripple 
           to="/admin/dashboard"
           active-class="bg-primary text-white"
           exact
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="dashboard" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="dashboard" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Dashboard</q-item-label>
+            <q-item-label class="text-body1">Dashboard</q-item-label>
           </q-item-section>
         </q-item>
         <q-item 
@@ -102,13 +104,13 @@
           v-ripple 
           to="/admin/scholarships"
           active-class="bg-primary text-white"
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="school" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="school" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Scholarships</q-item-label>
+            <q-item-label class="text-body1">Scholarships</q-item-label>
           </q-item-section>
         </q-item>
         <q-item 
@@ -116,13 +118,13 @@
           v-ripple 
           to="/admin/applications"
           active-class="bg-primary text-white"
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="description" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="description" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Applications</q-item-label>
+            <q-item-label class="text-body1">Applications</q-item-label>
           </q-item-section>
         </q-item>
         <q-item 
@@ -130,13 +132,13 @@
           v-ripple 
           to="/admin/screenings"
           active-class="bg-primary text-white"
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="assessment" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="assessment" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Screenings</q-item-label>
+            <q-item-label class="text-body1">Screenings</q-item-label>
           </q-item-section>
         </q-item>
         <q-item 
@@ -144,13 +146,13 @@
           v-ripple 
           to="/admin/scholars"
           active-class="bg-primary text-white"
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="people" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="people" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Scholars</q-item-label>
+            <q-item-label class="text-body1">Scholars</q-item-label>
           </q-item-section>
         </q-item>
         <q-item 
@@ -158,13 +160,13 @@
           v-ripple 
           to="/admin/disbursements"
           active-class="bg-primary text-white"
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="payments" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="payments" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Disbursements</q-item-label>
+            <q-item-label class="text-body1">Disbursements</q-item-label>
           </q-item-section>
         </q-item>
         <q-item 
@@ -172,22 +174,22 @@
           v-ripple 
           to="/admin/reports"
           active-class="bg-primary text-white"
-          class="q-pa-sm"
+          class="q-pa-md"
         >
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="bar_chart" size="24px" />
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="bar_chart" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Reports</q-item-label>
+            <q-item-label class="text-body1">Reports</q-item-label>
           </q-item-section>
         </q-item>
         <q-separator class="q-mt-md" />
-        <q-item clickable v-ripple @click="handleLogout" class="q-pa-sm">
-          <q-item-section avatar class="q-mr-sm">
-            <q-icon name="logout" color="negative" size="24px" />
+        <q-item clickable v-ripple @click="handleLogout" class="q-pa-md">
+          <q-item-section avatar class="q-mr-md" style="min-width: 40px;">
+            <q-icon name="logout" color="negative" size="20px" />
           </q-item-section>
           <q-item-section>
-            <q-item-label class="text-negative">Logout</q-item-label>
+            <q-item-label class="text-body1 text-negative">Logout</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

@@ -75,4 +75,47 @@
   .q-chip {
     flex-shrink: 0;
   }
+  
+  // Ensure burger menu icon is visible
+  .q-btn {
+    &[icon="menu"],
+    &.q-btn--round {
+      color: white !important;
+      
+      .q-icon,
+      .q-btn__content .q-icon,
+      .q-icon[name="menu"] {
+        color: white !important;
+        font-size: 24px !important;
+      }
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+  }
+}
+
+// Global fix for menu icon in headers
+.q-header {
+  .q-btn {
+    .q-icon[name="menu"],
+    .q-btn__content .q-icon[name="menu"] {
+      color: white !important;
+      font-size: 24px !important;
+      display: inline-block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  }
+  
+  // Ensure text-white class works
+  .text-white,
+  .q-btn.text-white {
+    color: white !important;
+    
+    .q-icon {
+      color: white !important;
+    }
+  }
 }
