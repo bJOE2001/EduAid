@@ -139,34 +139,50 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
+import { defineComponent, computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+
+function getAuthFromStorage() {
+  const token = localStorage.getItem('token')
+  let user = null
+  try {
+    const saved = localStorage.getItem('user')
+    if (saved) user = JSON.parse(saved)
+  } catch (_) {}
+  return { isAuthenticated: !!token, user }
+}
 
 export default defineComponent({
   name: 'MainLayout',
   setup() {
-    const authStore = useAuthStore()
     const router = useRouter()
     const drawer = ref(false)
+    const auth = ref(getAuthFromStorage())
 
     const dashboardRoute = computed(() => {
-      if (authStore.userRole === 'applicant') {
-        return '/applicant/dashboard'
-      } else if (['admin', 'staff', 'committee', 'accounting', 'viewer'].includes(authStore.userRole)) {
-        return '/admin/dashboard'
-      }
+      const role = auth.value.user?.role?.slug
+      if (role === 'applicant') return '/applicant/dashboard'
+      if (['admin', 'staff', 'committee', 'accounting', 'viewer'].includes(role)) return '/admin/dashboard'
       return '/'
     })
 
     const handleLogout = async () => {
-      await authStore.logout()
+      try {
+        const authStore = useAuthStore()
+        await authStore.logout()
+      } catch (_) {}
+      auth.value = getAuthFromStorage()
       drawer.value = false
       router.push('/')
     }
 
+    onMounted(() => {
+      auth.value = getAuthFromStorage()
+    })
+
     return {
-      authStore,
+      authStore: auth,
       dashboardRoute,
       handleLogout,
       drawer
