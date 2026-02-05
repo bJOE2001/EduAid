@@ -63,10 +63,10 @@ const router = createRouter({
 
 // Router guard function - will be called after Pinia is initialized via boot file
 export function setupRouterGuard() {
-  router.beforeEach((to, from, next) => {
+  router.beforeEach(async (to, from, next) => {
     try {
-      // Import store dynamically to ensure Pinia is initialized
-      const { useAuthStore } = require('../stores/auth')
+      // Dynamically import store - Pinia should be initialized by now via boot file
+      const { useAuthStore } = await import('../stores/auth')
       const authStore = useAuthStore()
       
       if (to.meta.requiresAuth && !authStore.isAuthenticated) {
