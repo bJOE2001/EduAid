@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+// Public scholarship listing and detail (for homepage and public scholarship pages)
+Route::get('/scholarships', [ScholarshipController::class, 'index']);
+Route::get('/scholarships/{scholarship}', [ScholarshipController::class, 'show']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -29,10 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applicants/{applicant}', [ApplicantController::class, 'show']);
     Route::put('/applicants/{applicant}', [ApplicantController::class, 'update']);
 
-    // Scholarships
-    Route::get('/scholarships', [ScholarshipController::class, 'index']);
+    // Scholarships (create, update, delete require auth)
     Route::post('/scholarships', [ScholarshipController::class, 'store'])->middleware('role:admin,staff');
-    Route::get('/scholarships/{scholarship}', [ScholarshipController::class, 'show']);
     Route::put('/scholarships/{scholarship}', [ScholarshipController::class, 'update'])->middleware('role:admin,staff');
     Route::delete('/scholarships/{scholarship}', [ScholarshipController::class, 'destroy'])->middleware('role:admin');
 
