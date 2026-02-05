@@ -1,47 +1,92 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-primary text-white">
-      <q-toolbar>
+      <q-toolbar class="q-px-lg">
         <q-toolbar-title class="row items-center no-wrap">
-          <q-avatar size="32px" class="q-mr-sm">
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" alt="EduAid Logo">
+          <q-avatar size="40px" class="q-mr-sm" style="background: rgba(255, 255, 255, 0.2);">
+            <q-icon name="school" size="24px" />
           </q-avatar>
-          <span class="text-h6">EduAid</span>
+          <span class="text-h6" style="font-weight: 700;">EduAid</span>
         </q-toolbar-title>
 
         <q-space />
 
-        <div class="row items-center q-gutter-xs gt-xs">
-          <q-btn flat dense icon="home" label="Home" to="/" class="q-px-sm" />
-          <q-btn flat dense icon="school" label="Scholarships" to="/scholarships" class="q-px-sm" />
-          <q-btn flat dense icon="help" label="Guide" to="/guide" class="q-px-sm" />
+        <div class="row items-center q-gutter-sm gt-xs">
+          <q-btn 
+            flat 
+            dense 
+            icon="home" 
+            label="Home" 
+            to="/" 
+            class="q-px-md"
+            style="border-radius: 8px;"
+          />
+          <q-btn 
+            flat 
+            dense 
+            icon="school" 
+            label="Scholarships" 
+            to="/scholarships" 
+            class="q-px-md"
+            style="border-radius: 8px;"
+          />
+          <q-btn 
+            flat 
+            dense 
+            icon="help" 
+            label="Guide" 
+            to="/guide" 
+            class="q-px-md"
+            style="border-radius: 8px;"
+          />
         </div>
         
-        <q-separator vertical spaced class="gt-xs" />
+        <q-separator vertical spaced class="gt-xs q-mx-sm" />
         
-        <div class="row items-center q-gutter-xs">
-          <q-btn v-if="!authStore.isAuthenticated" flat dense icon="login" label="Login" to="/auth/login" class="q-px-sm" />
-          <q-btn v-else flat dense :to="dashboardRoute" class="q-px-sm">
-            <q-avatar size="24px" class="q-mr-xs">
+        <div class="row items-center q-gutter-sm">
+          <q-btn 
+            v-if="!authStore.isAuthenticated" 
+            unelevated 
+            color="white" 
+            text-color="primary"
+            icon="login" 
+            label="Login" 
+            to="/auth/login" 
+            class="q-px-md"
+            style="font-weight: 600; border-radius: 8px;"
+          />
+          <q-btn 
+            v-else 
+            flat 
+            dense 
+            :to="dashboardRoute" 
+            class="q-px-md"
+            style="border-radius: 8px;"
+          >
+            <q-avatar size="28px" class="q-mr-sm" style="background: rgba(255, 255, 255, 0.2);">
               <q-icon name="account_circle" />
             </q-avatar>
-            <span class="gt-xs">{{ authStore.user?.name || 'User' }}</span>
-            <q-menu>
-              <q-list style="min-width: 200px">
-                <q-item clickable v-close-popup :to="dashboardRoute">
+            <span class="gt-xs" style="font-weight: 500;">{{ authStore.user?.name || 'User' }}</span>
+            <q-menu 
+              style="border-radius: 12px; margin-top: 8px;"
+              class="q-pa-sm"
+            >
+              <q-list style="min-width: 220px">
+                <q-item clickable v-close-popup :to="dashboardRoute" class="q-pa-md" style="border-radius: 8px;">
                   <q-item-section avatar>
                     <q-icon name="dashboard" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label>Dashboard</q-item-label>
+                    <q-item-label style="font-weight: 500;">Dashboard</q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup @click="handleLogout">
+                <q-separator />
+                <q-item clickable v-close-popup @click="handleLogout" class="q-pa-md" style="border-radius: 8px;">
                   <q-item-section avatar>
-                    <q-icon name="logout" />
+                    <q-icon name="logout" color="negative" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label>Logout</q-item-label>
+                    <q-item-label style="font-weight: 500;" class="text-negative">Logout</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -54,8 +99,9 @@
           dense
           round
           icon="menu"
-          class="lt-sm"
+          class="lt-sm q-ml-sm"
           @click="drawer = !drawer"
+          style="color: white;"
         />
       </q-toolbar>
     </q-header>
@@ -129,60 +175,47 @@
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">
-      <q-toolbar>
+      <q-toolbar class="q-px-lg">
         <q-toolbar-title>
-          <div class="text-caption">© 2024 EduAid - Government Scholarship Management System</div>
+          <div class="text-body2" style="font-weight: 500;">© 2024 EduAid - Government Scholarship Management System</div>
         </q-toolbar-title>
+        <div class="row q-gutter-md gt-xs">
+          <q-btn flat dense label="Privacy Policy" class="text-grey-4" />
+          <q-btn flat dense label="Terms of Service" class="text-grey-4" />
+          <q-btn flat dense label="Contact" class="text-grey-4" />
+        </div>
       </q-toolbar>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
-import { defineComponent, computed, ref, onMounted } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-
-function getAuthFromStorage() {
-  const token = localStorage.getItem('token')
-  let user = null
-  try {
-    const saved = localStorage.getItem('user')
-    if (saved) user = JSON.parse(saved)
-  } catch (_) {}
-  return { isAuthenticated: !!token, user }
-}
 
 export default defineComponent({
   name: 'MainLayout',
   setup() {
     const router = useRouter()
     const drawer = ref(false)
-    const auth = ref(getAuthFromStorage())
+    const authStore = useAuthStore()
 
     const dashboardRoute = computed(() => {
-      const role = auth.value.user?.role?.slug
+      const role = authStore.user?.role?.slug
       if (role === 'applicant') return '/applicant/dashboard'
       if (['admin', 'staff', 'committee', 'accounting', 'viewer'].includes(role)) return '/admin/dashboard'
       return '/'
     })
 
     const handleLogout = async () => {
-      try {
-        const authStore = useAuthStore()
-        await authStore.logout()
-      } catch (_) {}
-      auth.value = getAuthFromStorage()
+      await authStore.logout()
       drawer.value = false
       router.push('/')
     }
 
-    onMounted(() => {
-      auth.value = getAuthFromStorage()
-    })
-
     return {
-      authStore: auth,
+      authStore,
       dashboardRoute,
       handleLogout,
       drawer

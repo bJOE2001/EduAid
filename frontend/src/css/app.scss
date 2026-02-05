@@ -1,5 +1,294 @@
 // app global css in SCSS form
 
+// ============================================
+// Modern Design System
+// ============================================
+
+// Color Variables
+$primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+$info-gradient: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+$warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+// Modern Shadows
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+
+// Smooth Transitions
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+// Modern Card Styling
+.q-card {
+  border-radius: 12px !important;
+  box-shadow: $shadow-md !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    box-shadow: $shadow-lg !important;
+    transform: translateY(-2px);
+  }
+  
+  .q-card-section {
+    padding: 20px;
+  }
+}
+
+// Modern Button Styling
+.q-btn {
+  border-radius: 8px !important;
+  font-weight: 500;
+  text-transform: none;
+  
+  &.q-btn--flat {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  &.q-btn--unelevated,
+  &.q-btn--raised {
+    box-shadow: $shadow-sm;
+    
+    &:hover {
+      box-shadow: $shadow-md;
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Modern Input Styling
+.q-field {
+  .q-field__control {
+    border-radius: 8px;
+  }
+}
+
+// Typography Improvements
+.text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-h6 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+// Modern Header
+.q-header {
+  box-shadow: $shadow-md;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%) !important;
+}
+
+// Modern Sidebar
+.q-drawer {
+  box-shadow: $shadow-lg;
+  
+  .q-item {
+    border-radius: 8px;
+    margin: 4px 8px;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    &.q-item--active {
+      background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+      color: white;
+      box-shadow: $shadow-sm;
+    }
+  }
+}
+
+// Modern Chip Styling
+.q-chip {
+  border-radius: 16px;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+// Modern Table Styling
+.q-table {
+  border-radius: 12px;
+  overflow: hidden;
+  
+  thead th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+  
+  tbody tr {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+  }
+}
+
+// KPI Card Styling
+.kpi-card {
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .kpi-icon {
+    opacity: 0.2;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+  }
+  
+  .kpi-value {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  
+  .kpi-label {
+    opacity: 0.9;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Hero Section
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 60px 40px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.95;
+    font-weight: 400;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+}
+
+// Feature Card Styling
+.feature-card {
+  border-radius: 16px;
+  padding: 32px;
+  height: 100%;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow-xl;
+    border-color: rgba(25, 118, 210, 0.2);
+  }
+  
+  .feature-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  
+  .feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+  }
+  
+  .feature-description {
+    color: #666;
+    line-height: 1.6;
+  }
+}
+
+// Modern Footer
+.q-footer {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+// Loading States
+.q-inner-loading {
+  .q-spinner {
+    color: #1976D2;
+  }
+}
+
+// Responsive Improvements
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 40px 24px;
+    
+    .hero-title {
+      font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+  }
+  
+  .kpi-card {
+    .kpi-icon {
+      font-size: 60px;
+    }
+  }
+}
+
 // Ensure Quasar icons render properly - hide any text content
 .q-icon {
   font-family: 'Material Icons';
