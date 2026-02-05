@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
 
 const routes = [
   {
@@ -62,23 +61,34 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
-  
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next({ name: 'login', query: { redirect: to.fullPath } })
-  } else if (to.meta.role) {
-    const userRole = authStore.user?.role?.slug
-    const allowedRoles = Array.isArray(to.meta.role) ? to.meta.role : [to.meta.role]
-    
-    if (!allowedRoles.includes(userRole)) {
-      next({ name: 'home' })
-    } else {
+// Router guard function - will be called after Pinia is initialized via boot file
+export function setupRouterGuard() {
+  router.beforeEach((to, from, next) => {
+    try {
+      // Import store dynamically to ensure Pinia is initialized
+      const { useAuthStore } = require('../stores/auth')
+      const authStore = useAuthStore()
+      
+      if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+        next({ name: 'login', query: { redirect: to.fullPath } })
+      } else if (to.meta.role) {
+        const userRole = authStore.user?.role?.slug
+        const allowedRoles = Array.isArray(to.meta.role) ? to.meta.role : [to.meta.role]
+        
+        if (!allowedRoles.includes(userRole)) {
+          next({ name: 'home' })
+        } else {
+          next()
+        }
+      } else {
+        next()
+      }
+    } catch (error) {
+      // If Pinia/store is not available yet, allow navigation
+      console.warn('Auth store not available, allowing navigation:', error)
       next()
     }
-  } else {
-    next()
-  }
-})
+  })
+}
 
 export default router

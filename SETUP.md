@@ -27,28 +27,45 @@
    php artisan key:generate
    ```
 
-4. **Update `.env` file with your database credentials:**
+4. **Create Database in MySQL Workbench:**
+   - Open MySQL Workbench
+   - Connect to your MySQL server
+   - Create a new schema/database named `eduaid`
+   - Or run this SQL command:
+     ```sql
+     CREATE DATABASE eduaid CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+     ```
+
+5. **Update `.env` file with your MySQL Workbench database credentials:**
    ```env
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
    DB_DATABASE=eduaid
    DB_USERNAME=root
-   DB_PASSWORD=
+   DB_PASSWORD=your_mysql_password
    ```
+   
+   **Note:** If you're using XAMPP, the default username is `root` and password is usually empty (leave blank). If you're using MySQL Workbench with a different setup, use your MySQL Workbench connection credentials.
 
-5. **Run migrations and seeders:**
+6. **Test database connection:**
+```bash
+php artisan migrate:status
+```
+   If successful, you'll see migration status. If errors occur, check your .env database settings.
+
+7. **Run migrations and seeders:**
    ```bash
    php artisan migrate
    php artisan db:seed
    ```
 
-6. **Create storage link:**
+8. **Create storage link:**
    ```bash
    php artisan storage:link
    ```
 
-7. **Start the server:**
+9. **Start the server:**
    ```bash
    php artisan serve
    ```
@@ -153,9 +170,18 @@ All API endpoints are prefixed with `/api` and require authentication (except lo
 ### Backend Issues
 
 1. **Migration errors:**
-   - Ensure database exists
-   - Check `.env` database credentials
+   - Ensure database `eduaid` exists in MySQL Workbench
+   - Check `.env` database credentials match your MySQL Workbench connection
+   - Verify MySQL server is running
+   - Test connection: `php artisan migrate:status`
    - Run `php artisan migrate:fresh` (WARNING: deletes all data)
+   - See `backend/MYSQL_SETUP.md` for detailed MySQL Workbench setup
+
+2. **Database connection errors:**
+   - Verify MySQL service is running
+   - Check host, port, username, password in .env
+   - Ensure database name matches exactly (case-sensitive on Linux)
+   - Try connecting with MySQL Workbench first to verify credentials
 
 2. **Permission errors:**
    - Ensure `storage` and `bootstrap/cache` are writable

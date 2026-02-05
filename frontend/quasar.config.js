@@ -22,8 +22,11 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#property-boot
     boot: [
-      'axios'
+      'pinia',
+      'axios',
+      'router'
     ],
+
 
     // https://github.com/quasarframework/quasar/blob/dev/app-extension/app-extension-vite/src/plugin/index.js#L1
     plugins: {
