@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import { defineComponent, ref, getCurrentInstance } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter, useRoute } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'LoginPage',
   setup() {
-    const instance = getCurrentInstance()
-    const $q = instance?.appContext.config.globalProperties.$q
+    const $q = useQuasar()
     const authStore = useAuthStore()
     const router = useRouter()
     const route = useRoute()
@@ -53,15 +53,6 @@ export default defineComponent({
     const email = ref('')
     const password = ref('')
     const loading = ref(false)
-
-    const showNotify = (type, message) => {
-      if ($q && typeof $q.notify === 'function') {
-        $q.notify({ type, message, position: 'top' })
-      } else {
-        // Fallback to console if notify is not available
-        console[type === 'positive' ? 'log' : 'error'](message)
-      }
-    }
 
     const onSubmit = async () => {
       loading.value = true
@@ -71,12 +62,23 @@ export default defineComponent({
           password: password.value
         })
         
-        showNotify('positive', 'Login successful!')
+        $q.notify({
+          type: 'positive',
+          message: 'Login successful!',
+          position: 'top'
+        })
         
         const redirect = route.query.redirect || (authStore.userRole === 'applicant' ? '/applicant/dashboard' : '/admin/dashboard')
         router.push(redirect)
       } catch (error) {
-        showNotify('negative', error.response?.data?.message || 'Login failed. Please check your credentials.')
+        const errorMessage = error.response?.data?.message || 
+                           error.response?.data?.errors?.email?.[0] ||
+                           'Login failed. Please check your credentials.'
+        $q.notify({
+          type: 'negative',
+          message: errorMessage,
+          position: 'top'
+        })
         console.error('Login error:', error)
       } finally {
         loading.value = false

@@ -11,25 +11,32 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role_id' => 5, // Default to Applicant role
-        ]);
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => 5, // Default to Applicant role
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'user' => $user->load('role'),
-            'token' => $token,
-        ], 201);
+            return response()->json([
+                'user' => $user->load('role'),
+                'token' => $token,
+            ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 
     public function login(Request $request)
@@ -42,9 +49,12 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'message' => 'The provided credentials are incorrect.',
+                'errors' => [
+                    'email' => ['The provided credentials are incorrect.']
+                ]
+            ], 422);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

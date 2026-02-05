@@ -69,13 +69,24 @@ export function setupRouterGuard() {
       const { useAuthStore } = await import('../stores/auth')
       const authStore = useAuthStore()
       
+      // If user has token but no user data, try to fetch it
+      if (authStore.token && !authStore.user) {
+        try {
+          await authStore.fetchUser()
+        } catch (error) {
+          // If fetch fails, continue with navigation check
+          console.warn('Failed to fetch user on route guard:', error)
+        }
+      }
+      
       if (to.meta.requiresAuth && !authStore.isAuthenticated) {
         next({ name: 'login', query: { redirect: to.fullPath } })
       } else if (to.meta.role) {
         const userRole = authStore.user?.role?.slug
         const allowedRoles = Array.isArray(to.meta.role) ? to.meta.role : [to.meta.role]
         
-        if (!allowedRoles.includes(userRole)) {
+        if (!userRole || !allowedRoles.includes(userRole)) {
+          // User doesn't have required role, redirect to home
           next({ name: 'home' })
         } else {
           next()

@@ -69,17 +69,24 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.data
         return response.data
       } catch (error) {
-        this.logout()
+        // If fetch fails, clear auth but don't throw
+        if (error.response?.status === 401) {
+          this.logout()
+        }
         throw error
       }
     },
 
     initializeAuth() {
       if (this.token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+        // Token is already set in localStorage, axios interceptor will add it to requests
+        // Try to fetch user to verify token is still valid
         this.fetchUser().catch(() => {
-          // If fetch fails, clear auth
-          this.logout()
+          // If fetch fails, token is invalid, clear auth silently
+          // Don't call logout() here to avoid redirect loops
+          this.token = null
+          this.user = null
+          localStorage.removeItem('token')
         })
       }
     }

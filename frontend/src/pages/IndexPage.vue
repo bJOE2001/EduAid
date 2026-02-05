@@ -21,7 +21,8 @@
         <q-card>
           <q-card-section>
             <div class="text-h6">Available Scholarships</div>
-            <q-list>
+            <q-inner-loading :showing="loading" />
+            <q-list v-if="!loading && scholarships.length > 0">
               <q-item v-for="scholarship in scholarships" :key="scholarship.id" clickable :to="`/scholarships/${scholarship.id}`">
                 <q-item-section>
                   <q-item-label>{{ scholarship.name }}</q-item-label>
@@ -34,6 +35,20 @@
                 </q-item-section>
               </q-item>
             </q-list>
+            <q-banner v-else-if="!loading && scholarships.length === 0" class="bg-grey-3 q-mt-md">
+              <template v-slot:avatar>
+                <q-icon name="info" color="primary" />
+              </template>
+              <div class="text-body1">No active scholarships available at the moment.</div>
+              <div class="text-caption q-mt-xs">Please check back later or contact the administrator for more information.</div>
+            </q-banner>
+            <q-banner v-if="error" class="bg-negative text-white q-mt-md">
+              <template v-slot:avatar>
+                <q-icon name="error" />
+              </template>
+              <div class="text-body1">Unable to load scholarships</div>
+              <div class="text-caption q-mt-xs">{{ error }}</div>
+            </q-banner>
           </q-card-section>
         </q-card>
       </div>
@@ -49,6 +64,8 @@ export default defineComponent({
   name: 'IndexPage',
   setup() {
     const scholarships = ref([])
+    const loading = ref(false)
+    const error = ref(null)
     const features = [
       {
         title: 'Easy Application',
@@ -65,13 +82,20 @@ export default defineComponent({
     ]
 
     const fetchScholarships = async () => {
+      loading.value = true
+      error.value = null
       try {
         const response = await api.get('/scholarships', {
           params: { is_active: 1 }
         })
-        scholarships.value = response.data.data || []
-      } catch (error) {
-        console.error('Error fetching scholarships:', error)
+        // Handle different response formats
+        scholarships.value = response.data?.data || response.data || []
+      } catch (err) {
+        console.error('Error fetching scholarships:', err)
+        error.value = err.response?.data?.message || 'Failed to load scholarships. Please try again later.'
+        scholarships.value = []
+      } finally {
+        loading.value = false
       }
     }
 
@@ -81,7 +105,9 @@ export default defineComponent({
 
     return {
       scholarships,
-      features
+      features,
+      loading,
+      error
     }
   }
 })

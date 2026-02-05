@@ -1,3 +1,4 @@
+import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 
 export const api = axios.create({
@@ -27,9 +28,18 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Clear auth state
       localStorage.removeItem('token')
-      window.location.href = '/auth/login'
+      // Only redirect if not already on login page
+      if (window.location.pathname !== '/auth/login') {
+        window.location.href = '/auth/login'
+      }
     }
     return Promise.reject(error)
   }
 )
+
+export default boot(({ app }) => {
+  // Make api available globally if needed
+  app.config.globalProperties.$api = api
+})
